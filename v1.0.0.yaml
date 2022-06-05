@@ -1,0 +1,117 @@
+openapi: "3.0.0"
+info:
+  title: "シンプルメモアプリバックエンドAPI"
+  version: "1.0.0"
+  description: "シンプルメモアプリ バックエンドAPI定義"
+servers:
+  - url: "https://note.example.com"
+    description: "Production"
+tags:
+  - name: "Note"
+    description: "メモ機能"
+paths:
+  /note:
+    post:
+      tags:
+        - "Note"
+      summary: "メモを新規作成"
+      description: "新しくメモを作成する"
+      parameters:
+        - in: "header"
+          name: "x-uid"
+          description: "ユーザのID"
+          required: true
+          schema:
+            $ref: "#/components/schemas/ReqPostNoteHeader"
+          examples:
+            ReqPostNoteHeaderExample:
+              $ref: "#/components/examples/ReqPostNoteHeaderExample"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReqPostNoteBody"
+            examples:
+              ReqPostNoteBodyExample:
+                $ref: "#/components/examples/ReqPostNoteBodyExample"
+      responses:
+        "200":
+          description: "新規作成成功"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResPostNote"
+              examples:
+                ResPostNoteBodyOKExample:
+                  $ref: "#/components/examples/ResPostNoteBodyOKExample"
+        "400":
+          description: "新規作成失敗(Bad Request)"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              examples:
+                ResPostNoteBodyBadRequestExample:
+                  $ref: "#/components/examples/ResPostNoteBodyBadRequestExample"
+
+components:
+  schemas:
+    ReqPostNoteHeader:
+      description: "メモ新規作成リクエストヘッダ"
+      type: "string"
+      format: "uuid"
+      minLength: 36
+      maxLength: 36
+    ReqPostNoteBody:
+      description: "メモ新規作成リクエストボディ"
+      type: "object"
+      required:
+        - "content"
+      properties:
+        content:
+          description: "メモ内容"
+          type: "string"
+          maxLength: 100
+    ResPostNote:
+      description: "メモ新規作成レスポンスボディ"
+      type: "object"
+      title: "ResPostNote"
+      properties:
+        type:
+          description: "レスポンス種別"
+          type: "string"
+          enum:
+            - "info"
+            - "warn"
+        code:
+          description: "レスポンスコード"
+          type: "integer"
+        message:
+          description: "メッセージ"
+          type: "string"
+    Error:
+      description: "エラーレスポンス"
+      type: "object"
+      title: "Error"
+      properties:
+        code:
+          description: "エラーコード"
+          type: "integer"
+        message:
+          description: "メッセージ"
+          type: "string"
+  examples:
+    ReqPostNoteHeaderExample:
+      value: "28c2c293-8b57-e2c0-539c-d923f434e301"
+    ReqPostNoteBodyExample:
+      value:
+        content: "シャンプーを買いに行く"
+    ResPostNoteBodyOKExample:
+      value:
+        type: "info"
+        code: 200
+        message: "The note was successfully added."
+    ResPostNoteBodyBadRequestExample:
+      value:
+        code: 400
+        message: "Bad Request."
