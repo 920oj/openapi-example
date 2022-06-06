@@ -75,7 +75,10 @@ components:
     ResPostNote:
       description: "メモ新規作成レスポンスボディ"
       type: "object"
-      title: "ResPostNote"
+      required:
+        - "type"
+        - "code"
+        - "message"
       properties:
         type:
           description: "レスポンス種別"
@@ -92,7 +95,9 @@ components:
     Error:
       description: "エラーレスポンス"
       type: "object"
-      title: "Error"
+      required:
+        - "code"
+        - "message"
       properties:
         code:
           description: "エラーコード"
